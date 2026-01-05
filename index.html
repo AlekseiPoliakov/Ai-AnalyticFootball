@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>EPL AI Companion</title>
+    <!-- Шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Иконки -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Стили -->
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+  <div class="app">
+  <main class="shell">
+
+    <!-- ЭКРАН 0: ДИСКЛЕЙМЕР / СОГЛАСИЕ -->
+    <div id="screen-disclaimer" class="screen active">
+        <div class="center-content">
+            <div class="disclaimer-text-box">
+                <p>Добро пожаловать в <strong>EPL AI Companion</strong>.</p>
+                <p>Это приложение использует искусственный интеллект для анализа футбольных матчей. Все данные носят ознакомительный характер.</p>
+                <p>Продолжая, вы подтверждаете, что вам исполнилось 18 лет и вы принимаете пользовательское соглашение.</p>
+            </div>
+            
+            <div class="consent-box">
+                <label class="checkbox-container">
+                    Мне есть 18 лет, принимаю условия
+                    <input type="checkbox" id="consent-checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <button id="btn-digital-sign" class="sign-btn disabled" disabled>
+                <i class="fa-solid fa-fingerprint"></i>
+                Войти в приложение
+            </button>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 1: ВЫБОР ЛИГИ -->
+<div id="screen-league" class="screen hidden">
+  <div class="center-content">
+    <h1 class="main-title">Выберите лигу</h1>
+
+    <div class="league-dropdown-container">
+
+      <!-- КНОПКА (только кнопка) -->
+      <div
+        class="league-card league-group-card"
+        id="btn-toggle-eng-leagues"
+        role="button"
+        tabindex="0"
+        aria-expanded="false"
+        aria-controls="eng-leagues-list"
+      >
+        <div class="league-main-logo league-main-emblem" aria-hidden="true">
+          <i class="fa-solid fa-futbol"></i>
+        </div>
+
+        <div class="league-info">
+          <h2>Английский футбол</h2>
+          <p id="eng-selected-league-line">Премьер-лига • Сезон 2025/26</p>
+        </div>
+
+        <div class="league-chevron" aria-hidden="true">
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+      </div>
+
+      <!-- СПИСОК (отдельно от кнопки, НЕ вложен в неё) -->
+      <div id="eng-leagues-list" class="eng-leagues-list collapsed">
+        <!-- Premier League (активная) -->
+        <div class="league-option selected" id="btn-select-epl" data-league-id="epl" role="button" tabindex="0">
+          <img src="assets/Premier_League_Logo.svg" class="league-option-logo" alt="Premier League">
+          <div class="league-info">
+            <h2>Премьер-лига (Premier League)</h2>
+            <p>Сезон 2025/26 • Тур 20</p>
+          </div>
+          <div class="league-check" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+        </div>
+
+        <!-- Championship (disabled) -->
+        <div class="league-option disabled" aria-disabled="true">
+          <img src="assets/Football_League_Championship.svg" class="league-option-logo" alt="EFL Championship">
+          <div class="league-info">
+            <h2>Чемпионшип (EFL Championship)</h2>
+            <p>24 клуба — 3 вверх, 3 вниз</p>
+          </div>
+          <div class="league-x" aria-hidden="true"><i class="fa-solid fa-xmark"></i></div>
+        </div>
+
+        <!-- League One (disabled) -->
+        <div class="league-option disabled" aria-disabled="true">
+          <img src="assets/EFL_League_One.svg" class="league-option-logo" alt="EFL League One">
+          <div class="league-info">
+            <h2>Лига 1 (EFL League One)</h2>
+            <p>24 клуба — 3 вверх, 4 вниз</p>
+          </div>
+          <div class="league-x" aria-hidden="true"><i class="fa-solid fa-xmark"></i></div>
+        </div>
+
+        <!-- League Two (disabled) -->
+        <div class="league-option disabled" aria-disabled="true">
+          <img src="assets/Sky_Bet_EFL_League_Two.svg" class="league-option-logo" alt="EFL League Two">
+          <div class="league-info">
+            <h2>Лига 2 (EFL League Two)</h2>
+            <p>24 клуба — 4 вверх, 2 вниз</p>
+          </div>
+          <div class="league-x" aria-hidden="true"><i class="fa-solid fa-xmark"></i></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+    <!-- ЭКРАН 2: ВЫБОР КОМАНДЫ -->
+    <div id="screen-team-select" class="screen hidden">
+        <div class="header-nav">
+            <button class="icon-btn" id="back-to-league"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Любимый клуб</h2>
+            <div style="width: 40px;"></div>
+        </div>
+        <div class="container">
+            <div id="teams-grid" class="teams-grid">
+                <!-- JS рендерит команды здесь -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 3: ДАШБОРД -->
+    <div id="screen-dashboard" class="screen hidden">
+        <!-- Закрепленный заголовок -->
+        <div class="dashboard-header">
+            <div class="header-top">
+                <div class="team-identity">
+                    <img id="my-club-logo" class="club-logo-mini" src="" alt="">
+                    <h2 id="my-club-name">Название клуба</h2>
+                </div>
+                <button class="glass-btn" onclick="backToTeamSelect()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </div>
+
+            <!-- Навигация по вкладкам -->
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" onclick="openPage('overview')">Обзор</button>
+                <button class="tab-btn" onclick="openPage('matches')">Матчи</button>
+                <button class="tab-btn" onclick="openPage('table')">Таблица</button>
+                <button class="tab-btn" onclick="openPage('players')">Состав</button>
+                <button class="tab-btn" onclick="openPage('stats')">Статистика</button>
+            </div>
+        </div>
+
+        <!-- КОНТЕНТ: ОБЗОР -->
+        <div id="screen-overview" class="container" style="padding-top: 20px;">
+            <!-- Контент заполняется через JS -->
+        </div>
+    </div>
+
+    <!-- ЭКРАН 4: ПОЛНЫЙ СПИСОК МАТЧЕЙ -->
+    <div id="screen-matches" class="screen hidden">
+        <div class="header-nav">
+            <button class="icon-btn" onclick="backToDashboard()"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Календарь матчей</h2>
+            <div style="width: 40px;"></div>
+        </div>
+        <div class="container">
+            <div id="full-matches-list">
+                <!-- JS рендерит карточки матчей здесь -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 5: ПОЛНАЯ ТАБЛИЦА (ДЕТАЛЬНАЯ) -->
+    <div id="screen-table" class="screen hidden">
+        <div class="header-nav">
+            <button class="icon-btn" onclick="backToDashboard()"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Турнирная таблица</h2>
+            <div style="width: 40px;"></div>
+        </div>
+        
+        <div class="table-scroll-container">
+            <table class="full-detailed-table">
+                <thead>
+                    <tr>
+                        <th class="sticky-col">#</th>
+                        <th class="sticky-col-2">Клуб</th>
+                        <th>И</th>
+                        <th>В</th>
+                        <th>Н</th>
+                        <th>П</th>
+                        <th>ЗМ</th>
+                        <th>ПМ</th>
+                        <th>РМ</th>
+                        <th style="color:#fff;">О</th>
+                        <th>Последние 5</th>
+                    </tr>
+                </thead>
+                <tbody id="full-league-table">
+                    <!-- JS рендерит детальные строки -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 6: ИГРОКИ (СОСТАВ) -->
+    <div id="screen-players" class="screen hidden">
+        <div class="header-nav">
+            <button class="icon-btn" onclick="backToDashboard()"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Состав команды</h2>
+            <div style="width: 40px;"></div>
+        </div>
+
+        <div class="squad-filters-container">
+            <div class="squad-filters">
+                <button class="filter-pill active" onclick="filterSquad('all', this)">Все</button>
+                <button class="filter-pill" onclick="filterSquad('GK', this)">ВРТ</button>
+                <button class="filter-pill" onclick="filterSquad('DEF', this)">ЗАЩ</button>
+                <button class="filter-pill" onclick="filterSquad('MID', this)">ПЗ</button>
+                <button class="filter-pill" onclick="filterSquad('FWD', this)">НАП</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div id="squad-list" class="teams-grid">
+                <!-- JS рендерит игроков -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 7: СТАТИСТИКА -->
+    <div id="screen-stats" class="screen hidden">
+        <div class="header-nav">
+            <button class="icon-btn" onclick="backToDashboard()"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Статистика лиги</h2>
+            <div style="width: 40px;"></div>
+        </div>
+        
+        <div class="container">
+            <div class="stats-dropdown-container">
+                <div class="stats-selected" id="stats-current-select" onclick="toggleStatsDropdown()">
+                    ГОЛЫ <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="stats-options hidden" id="stats-options-list">
+                    <div class="stats-option" onclick="changeStatsType('goals')">ГОЛЫ</div>
+                    <div class="stats-option" onclick="changeStatsType('assists')">ПЕРЕДАЧИ</div>
+                    <div class="stats-option" onclick="changeStatsType('cards')">ЖЕЛТЫЕ КАРТОЧКИ</div>
+                </div>
+            </div>
+
+            <div class="stats-table-header">
+                <span>Игрок</span>
+                <span>Показатель</span>
+            </div>
+
+            <div id="stats-list-container">
+                <!-- JS рендерит строки -->
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО AI -->
+    <div id="ai-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="close-btn" id="close-modal">&times;</div>
+            <div class="ai-header">
+                <i class="fa-solid fa-microchip" style="color: #a855f7;"></i>
+                Анализ AI
+            </div>
+            <div id="ai-result">
+                <!-- JS рендерит результат -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Логика приложения -->
+    <script src="main.js"></script>
+</main>
+</div>
+</body>
+</html>
